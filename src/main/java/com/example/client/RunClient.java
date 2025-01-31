@@ -6,13 +6,14 @@ import com.example.common.Player;
 import com.example.exceptions.NotEnoughCardsInDeck;
 import com.example.common.Table;
 import com.example.common.OutcomeFunctionSet;
+import com.example.common.*;
 
 public class RunClient {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws NotEnoughCardsInDeck {
     Player players[] = {new Player("player1"),new Player("player2"),new Player("player3"),new Player("player4")};
     Table table = new Table(players[0],players[1],players[2],players[3]);
-    static OutcomeFunction functions[] = {firstDeal(),secondDeal(),thirdDeal(),fourthDeal(),fifthDeal(),sixthDeal(),seventhDeal()}
-    table.playGame(firstDeal()); 
+    OutcomeFunction[] functions = {OutcomeFunctionSet.firstDeal(),OutcomeFunctionSet.secondDeal(),OutcomeFunctionSet.thirdDeal(),OutcomeFunctionSet.fourthDeal(),OutcomeFunctionSet.fifthDeal(),OutcomeFunctionSet.sixthDeal(),OutcomeFunctionSet.seventhDeal()};
+    table.playGame(OutcomeFunctionSet.firstDeal());
 
   }
 

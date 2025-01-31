@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 public class OutcomeFunctionSet {
   private static Player findBiggestCard(Player[] players) {
     Player currentFirstPlayer = null;
-    Player biggestPlayed = currentFirstPlayer;
+    Player biggestPlayed = currentFirstPlayer;// zostawało null przez całe wywołanie
     Colors trumpCard;
     for (Player player : players) {
       if (player.getFirstPlayer()) {
@@ -13,6 +13,7 @@ public class OutcomeFunctionSet {
         break;
       }
     }
+    biggestPlayed = currentFirstPlayer;// dlatego tu jeszcze raz przypisuję
 
     trumpCard = currentFirstPlayer.getLastPlayedCard().getColor();
 
@@ -59,8 +60,8 @@ public class OutcomeFunctionSet {
 
   public static OutcomeFunction firstDeal() {
     return (players, discardedDeck, trick, trumpColor) -> {
-      Player bigestCard = findBiggestCard(players);
-      bigestCard.changeScore(-20);
+      Player biggestCard = findBiggestCard(players);
+      biggestCard.changeScore(-20);
       if (discardedDeck.countCards() == 52)
         return true;
       return false;

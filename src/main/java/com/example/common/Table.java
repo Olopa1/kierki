@@ -7,24 +7,28 @@ public class Table {
   private Deck startingDeck;
   private Deck discardedDeck;
   private int trick;//lewa
-  private Colors trumpCard;
+  private Colors trumpColor;
 
   public Table(Player player1, Player player2, Player player3, Player player4) {
     this.players = new Player[] { player1, player2, player3, player4 };
     this.startingDeck = new Deck(false);
     this.discardedDeck = new Deck(true);
-    this.trumpCard = null;
+    this.trumpColor = null;
+    this.players[0].toggleFirstPlayer();
     this.trick = 1;
   }
 
-  public playGame(OutcomeFunction function){
+  public void playGame(OutcomeFunction function) throws NotEnoughCardsInDeck {
     startingDeck.shuffle();
     this.dealCards();
 
     for(Player player : this.players){
       player.playCard(0);
     }
-    while(!this.determinePoints()){
+    for(Player player : this.players){
+      discardedDeck.putOnDeck(player.getLastPlayedCard());
+    }
+    while(!this.determinePoints(function)){
       for(Player player : this.players){
         player.playCard(0);
       }
