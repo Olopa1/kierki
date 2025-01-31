@@ -7,16 +7,49 @@ public class Table {
   private Deck startingDeck;
   private Deck discardedDeck;
   private int trick;//lewa
+  private Colors trumpCard;
 
   public Table(Player player1, Player player2, Player player3, Player player4) {
     this.players = new Player[] { player1, player2, player3, player4 };
     this.startingDeck = new Deck(false);
     this.discardedDeck = new Deck(true);
+    this.trumpCard = null;
     this.trick = 1;
   }
 
-  public boolean determinePoints(OutcomeFunction function, Colors trumpColor) {
-    if (!function.detrminePoints(this.players, this.discardedDeck, this.trick, trumpColor)) {
+  public playGame(OutcomeFunction function){
+    startingDeck.shuffle();
+    this.dealCards();
+
+    for(Player player : this.players){
+      player.playCard(0);
+    }
+    while(!this.determinePoints()){
+      for(Player player : this.players){
+        player.playCard(0);
+      }
+
+      for(Player player : this.players){
+        discardedDeck.putOnDeck(player.getLastPlayedCard());
+      }
+      this.printPoints();
+    }
+    this.printPoints();
+    discardedDeck.restoreDeck();
+    startingDeck.restoreDeck();
+    for(Player player : this.players){
+      player.clearHand();
+    }
+  }
+  
+  private void printPoints(){
+    for(Player player : this.players){
+      System.out.println("Player: " + player.getPlayerName() + "have: " + player.getScore() + " points."); 
+    }
+  }
+
+  public boolean determinePoints(OutcomeFunction function) {
+    if (function.detrminePoints(this.players, this.discardedDeck, this.trick, this.trumpColor)) {
       startingDeck.restoreDeck();
       discardedDeck.restoreDeck();
       this.clearPlayerHands();
