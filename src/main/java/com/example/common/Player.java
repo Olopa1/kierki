@@ -57,4 +57,17 @@ public class Player implements Serializable{
   public void clearHand(){
     this.hand.emptyHand();
   }
+
+  public Hand getHand(){
+    return this.hand;
+  }
+
+
+  public void displayHand(){
+    this.hand.displayHand();
+  }
+
+  public int getNumberOfCards(){
+    return this.hand.getNumberOfCards();
+  }
 }

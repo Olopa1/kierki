@@ -1,8 +1,9 @@
 package com.example.common;
 
-import javafx.scene.paint.Color;
 
-public class OutcomeFunctionSet {
+import java.io.Serializable;
+
+public class OutcomeFunctionSet implements Serializable {
   private static Player findBiggestCard(Player[] players) {
     Player currentFirstPlayer = null;
     Player biggestPlayed = currentFirstPlayer;// zostawało null przez całe wywołanie

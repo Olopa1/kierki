@@ -2,12 +2,16 @@ package com.example.common;
 
 import com.example.exceptions.NotEnoughCardsInDeck;
 
-public class Table {
+import java.io.Serializable;
+
+public class Table implements Serializable {
   private Player players[];
   private Deck startingDeck;
   private Deck discardedDeck;
   private int trick;//lewa
   private Colors trumpColor;
+  private int currentPlayer;
+  private OutcomeFunction function;
 
   public Table(Player player1, Player player2, Player player3, Player player4) {
     this.players = new Player[] { player1, player2, player3, player4 };
@@ -16,6 +20,51 @@ public class Table {
     this.trumpColor = null;
     this.players[0].toggleFirstPlayer();
     this.trick = 1;
+    this.currentPlayer = 0;
+  }
+
+  public int nextMove(Player player, int cardIndex){
+    if(player != this.players[this.currentPlayer]) return this.currentPlayer;
+    System.out.println(this.currentPlayer);
+    // tu trzeba sprawdzić czy ruch jest legalny
+
+    player.playCard(cardIndex);
+    discardedDeck.putOnDeck(player.getLastPlayedCard());
+    this.currentPlayer = (this.currentPlayer + 1) % 4;
+
+    for (Player player1 : this.players){
+      if(player1.getNumberOfCards()!=player.getNumberOfCards())
+        return this.currentPlayer;
+    }
+
+    if(!this.determinePoints(function)) {
+      this.currentPlayer = this.getFirstPlayer();
+      return this.currentPlayer;
+    }
+
+    discardedDeck.restoreDeck();
+    startingDeck.restoreDeck();
+    for(Player player1 : this.players){
+      player1.clearHand();
+    }
+
+    return -1;
+  }
+
+  public int nextHand(OutcomeFunction function) throws NotEnoughCardsInDeck { // rozdanie
+    startingDeck.shuffle();
+    this.dealCards();
+    this.function = function;
+
+    this.currentPlayer = this.getFirstPlayer();
+    return this.currentPlayer;
+  }
+
+  private int getFirstPlayer(){
+    for (int i = 0; i < 4; i++) {
+      if(this.players[i].getFirstPlayer()) return i;
+    }
+    return -1;
   }
 
   public void playGame(OutcomeFunction function) throws NotEnoughCardsInDeck {
@@ -46,10 +95,20 @@ public class Table {
     }
   }
   
-  private void printPoints(){
+  public void printPoints(){
     for(Player player : this.players){
       System.out.println("Player: " + player.getPlayerName() + "have: " + player.getScore() + " points."); 
     }
+  }
+  public Player getPlayer(String name){
+    for(Player player : this.players){
+      if(player.getPlayerName().equals(name)) return player;
+    }
+    return null;
+  }
+
+  public Deck getDiscardedDeck(){
+    return this.discardedDeck;
   }
 
   public boolean determinePoints(OutcomeFunction function) {

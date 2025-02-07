@@ -37,4 +37,8 @@ public class Hand implements Serializable{
   public void emptyHand(){
     this.cards.clear();
   }
+
+  public int getNumberOfCards(){
+    return this.cards.size();
+  }
 }
