@@ -33,24 +33,24 @@ public class HandleClient implements Runnable {
 
             AuthenticationData data = (AuthenticationData) in.readObject();
             if (!RunServer.authenticate(data.login, data.password)) {
-                out.writeObject("Błąd logowania!");
+                out.writeObject("brak uzytkownika");
                 out.flush();
                 socket.close();
                 return;
             }
             this.username = data.login;
-            out.writeObject("Zalogowano jako " + username);
+            out.writeObject("zalogowano");
             out.flush();
 
             this.player = new Player(this.username);
 
-
-            out.writeObject("Podaj nazwę pokoju:");
+            out.writeObject(RunServer.getRoomsData());      
             out.flush();
 
             String roomName = (String) in.readObject();
             this.room = RunServer.findOrCreateRoom(roomName);
             room.addClient(this);
+            
 
             out.writeObject("Dołączono do pokoju " + roomName);
             out.flush();

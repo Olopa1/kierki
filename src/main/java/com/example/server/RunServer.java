@@ -47,4 +47,12 @@ public class RunServer {
     rooms.add(newRoom);
     return newRoom;
   }
+
+  public static HashMap<String,String> getRoomsData(){
+    HashMap<String, String> roomsData = new HashMap<String,String>();
+    for(Room room : rooms){
+      roomsData.put(room.getName(),Integer.toString(room.getPlayersNumber()));
+    }
+    return roomsData;
+  }
 }

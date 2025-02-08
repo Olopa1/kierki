@@ -72,8 +72,8 @@
                     <configuration>
                         <mainClass>com.example.client.RunClient</mainClass>
                     </configuration>
-          </execution>
-          <execution>
+                </execution>
+                <execution>
                     <id>run-server</id>
                     <goals>
                         <goal>java</goal>
@@ -81,6 +81,13 @@
                     <configuration>
                         <mainClass>com.example.server.RunServer</mainClass>
                     </configuration>
+                </execution>
+                <execution>
+                  <id>run-test</id>
+                    <goals>
+                      <goal>java</goal>
+                    </goals>
+                    <configuration><mainClass>com.example.client.tests</mainClass></configuration>
                 </execution>
             </executions>
         </plugin>

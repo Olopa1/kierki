@@ -8,7 +8,7 @@ import com.example.exceptions.NotEnoughCardsInDeck;
 
 import java.util.*;
 
-public class Room {
+public class Room{
 
     public final static OutcomeFunction[] functions = {OutcomeFunctionSet.firstDeal(),OutcomeFunctionSet.secondDeal(),OutcomeFunctionSet.thirdDeal(),OutcomeFunctionSet.fourthDeal(),OutcomeFunctionSet.fifthDeal(),OutcomeFunctionSet.sixthDeal(),OutcomeFunctionSet.seventhDeal()};
     private int currentHand;
@@ -24,6 +24,10 @@ public class Room {
     public String getName() {
         return name;
     }
+
+    public int getPlayersNumber(){
+    return this.clients.size();
+  }
 
     public synchronized boolean addClient(HandleClient client) throws NotEnoughCardsInDeck {
         if(clients.size()==ROOM_SIZE) return false;
