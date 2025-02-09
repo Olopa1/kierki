@@ -1,9 +1,11 @@
 package com.example.client;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
 import com.example.client.scenes.LoginScene;
+import com.example.client.scenes.TableScene;
 
 import javafx.scene.*;
 import javafx.stage.Stage;
@@ -22,7 +24,18 @@ public class SceneManager {
 
   
   private void initScenes(){
+    this.stage.setOnCloseRequest(event->{
+      try{
+        if(this.handler != null){
+          this.handler.endConnection();
+        }
+      }catch(IOException e){
+        e.printStackTrace(); 
+      }
+    });
     this.sceneManger.put("login", new LoginScene(this));
+    this.sceneManger.put("show_tables", new TableScene(this));
+    this.sceneManger.put("game", new TableScene(this));
   }
 
   public void displayScene(String sceneName){
@@ -30,4 +43,13 @@ public class SceneManager {
     this.stage.setTitle(sceneManger.get(sceneName).getSceneName());
     this.stage.show();
   }
+
+  public ClientNetworkHandler getNetworkHandler(){
+    return this.handler;
+  }
+
+  public void setNetworkHandler(ClientNetworkHandler networkHandler){
+    this.handler = networkHandler;
+  }
+
 }

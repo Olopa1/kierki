@@ -1,7 +1,10 @@
 package com.example.client.scenes;
 
+import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.concurrent.Flow;
 
+import com.example.client.ClientNetworkHandler;
 import com.example.client.SceneManager;
 import com.example.client.ScenesHanlder;
 
@@ -35,9 +38,17 @@ public class LoginScene implements ScenesHanlder{
     Button loginButton = new Button("Zaloguj");
     this.error = new Label("");
     loginButton.setOnAction(value->{
-      //UTWÓrz POŁĄCZENIA ! 
-      //KURDE
-      this.error.setText("OK");
+      try{
+        if(sceneManager.getNetworkHandler() == null){
+          sceneManager.setNetworkHandler(new ClientNetworkHandler(this.ipAddress.getText(), Integer.parseInt(this.port.getText()))); 
+        }
+        this.error.setText("Polaczono");
+        sceneManager.displayScene("show_tables");
+      }catch(NumberFormatException e){
+        this.error.setText("Port nie jest liczba");
+      }catch(IOException e){
+        this.error.setText("Nie mozna polaczyc z serwerem");
+      }
     });
     this.loginField = new TextField();
     this.ipAddress = new TextField();
@@ -59,7 +70,7 @@ public class LoginScene implements ScenesHanlder{
     gridPane.add(ipAccordion, 1, 7, 1, 1); 
     gridPane.setVgap(10);
     gridPane.setAlignment(Pos.CENTER);
-    this.scene = new Scene(gridPane,200,400); 
+    this.scene = new Scene(gridPane,250,400); 
   } 
 
   public String getSceneName(){
