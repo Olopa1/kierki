@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
+import com.example.client.scenes.ChooseRoomScene;
 import com.example.client.scenes.LoginScene;
 import com.example.client.scenes.TableScene;
 
-import javafx.scene.*;
 import javafx.stage.Stage;
 
 public class SceneManager {
@@ -34,11 +34,12 @@ public class SceneManager {
       }
     });
     this.sceneManger.put("login", new LoginScene(this));
-    this.sceneManger.put("show_tables", new TableScene(this));
+    this.sceneManger.put("show_tables", new ChooseRoomScene(this));
     this.sceneManger.put("game", new TableScene(this));
   }
 
   public void displayScene(String sceneName){
+    System.out.println(sceneName);
     this.stage.setScene(sceneManger.get(sceneName).getScene());
     this.stage.setTitle(sceneManger.get(sceneName).getSceneName());
     this.stage.show();

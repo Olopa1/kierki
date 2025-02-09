@@ -41,6 +41,8 @@ public class LoginScene implements ScenesHanlder{
       try{
         if(sceneManager.getNetworkHandler() == null){
           sceneManager.setNetworkHandler(new ClientNetworkHandler(this.ipAddress.getText(), Integer.parseInt(this.port.getText()))); 
+          sceneManager.getNetworkHandler().loginUser(this.loginField.getText(), passwordField.getText());
+          sceneManager.displayScene("show_tables");
         }
         this.error.setText("Polaczono");
         sceneManager.displayScene("show_tables");
@@ -48,6 +50,8 @@ public class LoginScene implements ScenesHanlder{
         this.error.setText("Port nie jest liczba");
       }catch(IOException e){
         this.error.setText("Nie mozna polaczyc z serwerem");
+      }catch(ClassNotFoundException e){
+        this.error.setText("Zla odpowiedz od serwera");
       }
     });
     this.loginField = new TextField();

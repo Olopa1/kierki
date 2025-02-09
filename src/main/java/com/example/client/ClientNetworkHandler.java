@@ -68,6 +68,8 @@ public class ClientNetworkHandler {
     }
     HashMap<String,String> roomData = null;
     try{
+      out.writeObject("pokaz");
+      out.flush();
       Object temp;
       temp = in.readObject();
       if(temp instanceof HashMap<?,?>){
@@ -86,15 +88,27 @@ public class ClientNetworkHandler {
       return false;
     }
     try{
+      out.writeObject("dolacz");
+      out.flush();
+      Object responseRaw = in.readObject();
+      if(!(responseRaw instanceof String)){
+        throw new ClassNotFoundException();
+      }
+      String response = (String) responseRaw;
+      System.out.println("Odpowiedz serwera: " + response);
+      if(response.compareTo("dolaczanie") != 0){
+        return false;
+      }
       out.writeObject(roomName);
       out.flush();
-      String response = (String) in.readObject();
+      response = (String) in.readObject();
+      System.out.println("Odpowiedz serwera 2: " + response);
     }catch(IOException e){
       throw e;
     }catch(ClassNotFoundException e){
       throw e;
     }
-    return false;
+    return true;
   }
 
   

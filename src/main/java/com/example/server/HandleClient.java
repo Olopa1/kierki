@@ -28,8 +28,8 @@ public class HandleClient implements Runnable {
     @Override
     public void run() {
         try {
-            out.writeObject("Podaj login:");
-            out.flush();
+            //out.writeObject("Podaj login:");
+            //out.flush();
 
             AuthenticationData data = (AuthenticationData) in.readObject();
             if (!RunServer.authenticate(data.login, data.password)) {
@@ -41,19 +41,36 @@ public class HandleClient implements Runnable {
             this.username = data.login;
             out.writeObject("zalogowano");
             out.flush();
-
-            this.player = new Player(this.username);
-
-            out.writeObject(RunServer.getRoomsData());      
-            out.flush();
-
-            String roomName = (String) in.readObject();
-            this.room = RunServer.findOrCreateRoom(roomName);
-            room.addClient(this);
+            System.out.println("Zalogownao uzytkownika: " + this.username);
+                      this.player = new Player(this.username);
             
+            while(true){
+                Object rawResponse = this.in.readObject();
+                if(rawResponse instanceof String){
+                    String responseMessage = (String) rawResponse;
+                    if(responseMessage.compareTo("dolacz") == 0){
+                        //PODAJE NAZWE POKOJU
+                        out.writeObject("dolaczanie");
+                        out.flush();
+                        String roomName = (String) in.readObject();
+                        this.room = RunServer.findOrCreateRoom(roomName);
+                        room.addClient(this);
 
-            out.writeObject("Dołączono do pokoju " + roomName);
-            out.flush();
+                        out.writeObject("dolaczono");
+                        out.flush();                       
+                        break;
+                    }else if(responseMessage.compareTo("pokaz") == 0){
+                        System.out.println(RunServer.getRoomsData());
+                        out.writeObject(RunServer.getRoomsData());      
+                        out.flush();                        
+                    }
+                }else{
+                    continue; 
+                }
+            }
+
+
+
 
 
             listenForMessages();
