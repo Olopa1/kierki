@@ -3,6 +3,7 @@ package com.example.common;
 import com.example.exceptions.NotEnoughCardsInDeck;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class Table implements Serializable {
   private Player players[];
@@ -60,7 +61,11 @@ public class Table implements Serializable {
     return this.currentPlayer;
   }
 
-  private int getFirstPlayer(){
+  public int getCurrentPlayer(){
+    return this.currentPlayer;
+  }
+
+  public int getFirstPlayer(){
     for (int i = 0; i < 4; i++) {
       if(this.players[i].getFirstPlayer()) return i;
     }
@@ -93,6 +98,14 @@ public class Table implements Serializable {
     for(Player player : this.players){
       player.clearHand();
     }
+  }
+
+  public HashMap<String, Integer> getPoints(){
+    HashMap<String, Integer> players = new HashMap<>();
+    for(Player player : this.players){
+      players.put(player.getPlayerName(), player.getScore());
+    }
+    return players;
   }
   
   public void printPoints(){

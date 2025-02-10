@@ -42,6 +42,7 @@ public class LoginScene implements ScenesHanlder{
         if(sceneManager.getNetworkHandler() == null){
           sceneManager.setNetworkHandler(new ClientNetworkHandler(this.ipAddress.getText(), Integer.parseInt(this.port.getText()))); 
           sceneManager.getNetworkHandler().loginUser(this.loginField.getText(), passwordField.getText());
+          sceneManager.login = this.loginField.getText();
           sceneManager.displayScene("show_tables");
         }
         this.error.setText("Polaczono");

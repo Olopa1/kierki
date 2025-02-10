@@ -62,7 +62,7 @@ public class HandleClient implements Runnable {
                     }else if(responseMessage.compareTo("pokaz") == 0){
                         System.out.println(RunServer.getRoomsData());
                         out.writeObject(RunServer.getRoomsData());      
-                        out.flush();                        
+                        out.flush();
                     }
                 }else{
                     continue; 
@@ -86,8 +86,13 @@ public class HandleClient implements Runnable {
     private void listenForMessages() throws IOException, ClassNotFoundException, NotEnoughCardsInDeck {
         Object object;
         while ((object = in.readObject()) != null) {
-            if(object instanceof String message)
-                room.broadcast(username + ": " + message, this);
+            if(object instanceof String message){
+                if(message.compareTo("chat") == 0) {
+                    String chatMessage = (String) in.readObject();
+                    room.broadcast(username + ": " + chatMessage, this);
+                }
+                else room.broadcast(username + ": " + message, this);
+            }
             if(object instanceof Table table){
                 room.broadcast(table, null);
             }

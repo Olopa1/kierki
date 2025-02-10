@@ -111,5 +111,20 @@ public class ClientNetworkHandler {
     return true;
   }
 
-  
+  public void sendChatMessage(String message) throws IOException {
+    out.writeObject("chat");
+    out.writeObject(message);
+    out.flush();
+  }
+
+  public void sendCard(Integer index) throws IOException {
+    out.writeObject(index);
+    out.flush();
+  }
+
+  public Object receiveChatMessage() throws IOException, ClassNotFoundException {
+    Object message = in.readObject();
+    return message;
+  }
+
 }

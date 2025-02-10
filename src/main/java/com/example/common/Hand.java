@@ -34,6 +34,10 @@ public class Hand implements Serializable{
     }
   }
 
+  public ArrayList<Card> getHand(){
+    return this.cards;
+  }
+
   public void emptyHand(){
     this.cards.clear();
   }

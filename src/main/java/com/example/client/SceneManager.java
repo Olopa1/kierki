@@ -15,6 +15,8 @@ public class SceneManager {
   private Stage stage;
   private ClientNetworkHandler handler = null;
 
+  public String login;
+
   public SceneManager(Stage stage){
     sceneManger = new HashMap<String,ScenesHanlder>();
     this.stage = stage;

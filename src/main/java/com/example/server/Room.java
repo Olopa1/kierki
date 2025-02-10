@@ -48,9 +48,9 @@ public class Room{
 
         int currentPlayer = this.table.nextHand(functions[0]);
         this.currentHand = 0;
-        broadcast("Gra rozpoczęta", null);
+        broadcast("Start", null);
         broadcast(this.table, null);
-        this.clients.get(currentPlayer).sendMessage("Teraz ty");
+        this.clients.get(currentPlayer).sendMessage("ty");
         return true;
     }
 
@@ -61,7 +61,7 @@ public class Room{
             result = this.table.nextHand(functions[this.currentHand]);
         }
         broadcast(this.table, null);
-        this.clients.get(result).sendMessage("Teraz ty");
+        this.clients.get(result).sendMessage("ty");
         return true;
     }
 
