@@ -3,6 +3,7 @@ package com.example.common;
 import com.example.exceptions.NotEnoughCardsInDeck;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Table implements Serializable {
@@ -27,7 +28,9 @@ public class Table implements Serializable {
   public int nextMove(Player player, int cardIndex){
     if(player != this.players[this.currentPlayer]) return this.currentPlayer;
     System.out.println(this.currentPlayer);
+
     // tu trzeba sprawdzić czy ruch jest legalny
+    if(!isMoveLegal(player, cardIndex)) return this.currentPlayer;
 
     player.playCard(cardIndex);
     discardedDeck.putOnDeck(player.getLastPlayedCard());
@@ -50,6 +53,32 @@ public class Table implements Serializable {
     }
 
     return -1;
+  }
+
+  private boolean isMoveLegal(Player player, int cardIndex){
+    if(this.getCurrentPlayer()==this.getFirstPlayer()){
+      ArrayList<Card> cards = player.getHand().getHand();
+      if(function==OutcomeFunctionSet.secondDeal() || function==OutcomeFunctionSet.fifthDeal() || function==OutcomeFunctionSet.seventhDeal()){
+        for(Card card : cards){
+          if(card.getColor()!=Colors.HEARTS)
+            return false;
+        }
+      }
+      return true;
+    }
+
+    Card firstCard = this.players[this.getFirstPlayer()].getLastPlayedCard();
+    Colors color = firstCard.getColor();
+    ArrayList<Card> cards = player.getHand().getHand();
+
+    if(color==player.getCard(cardIndex).getColor())
+      return true;
+    for(Card card : cards){
+      if(card.getColor()==color)
+        return false;
+    }
+
+    return true;
   }
 
   public int nextHand(OutcomeFunction function) throws NotEnoughCardsInDeck { // rozdanie

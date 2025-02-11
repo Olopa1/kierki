@@ -160,6 +160,14 @@ public class GameController {
 
     public void updateTable(){
         Platform.runLater(() -> {
+            player1.setVisible(true);
+            player2.setVisible(true);
+            player3.setVisible(true);
+            player4.setVisible(true);
+            points1.setVisible(true);
+            points2.setVisible(true);
+            points3.setVisible(true);
+            points4.setVisible(true);
             winLabel.setVisible(false);
             winPlayer.setVisible(false);
             winPoints.setVisible(false);

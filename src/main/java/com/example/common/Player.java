@@ -62,7 +62,9 @@ public class Player implements Serializable{
     return this.hand;
   }
 
-
+  public Card getCard(int index){
+    return this.hand.getCard(index);
+  }
   public void displayHand(){
     this.hand.displayHand();
   }

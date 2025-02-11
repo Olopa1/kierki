@@ -45,4 +45,8 @@ public class Hand implements Serializable{
   public int getNumberOfCards(){
     return this.cards.size();
   }
+
+  public Card getCard(int index){
+    return this.cards.get(index);
+  }
 }
