@@ -73,5 +73,21 @@
       <Polygon fx:id="triangle1" fill="DODGERBLUE" layoutX="273.0" layoutY="258.0" points="0.0, 15.0, 25.0, 30.0, 25.0, 0.0" rotate="270.0" stroke="BLACK" strokeType="INSIDE" />
       <Polygon fx:id="triangle3" fill="DODGERBLUE" layoutX="273.0" layoutY="75.0" points="0.0, 15.0, 25.0, 30.0, 25.0, 0.0" rotate="90.0" stroke="BLACK" strokeType="INSIDE" />
       <Polygon fx:id="triangle4" fill="DODGERBLUE" layoutX="420.0" layoutY="151.0" points="0.0, 15.0, 25.0, 30.0, 25.0, 0.0" rotate="180.0" stroke="BLACK" strokeType="INSIDE" />
+      <Label fx:id="winPoints" layoutX="217.0" layoutY="179.0" text="Punkty: -20">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="winLabel" layoutX="204.0" layoutY="152.0" text="Wygrał: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="winPlayer" layoutX="269.0" layoutY="152.0" text="Nazwa">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="leaveButton" layoutY="1.0" mnemonicParsing="false" onAction="#leaveRoom" text="Opuść pokój" />
    </children>
 </AnchorPane>

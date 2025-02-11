@@ -8,20 +8,70 @@ public class RunServer {
   private static final int PORT = 12345;
   private static Map<String, String> users = new HashMap<>(); // Login -> Hasło
   private static List<Room> rooms = new ArrayList<>();
+  private static List<HandleClient> clients = new ArrayList<>();
 
   public static void main(String[] args) {
     loadUsers(); // Wczytanie kont z pliku (dla prostoty)
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       System.out.println("Serwer uruchomiony na porcie " + PORT);
 
+      new Thread(() -> {
+        try {
+          String command;
+          BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+          while ((command = console.readLine()) != null){
+            if((command.compareTo("rooms")==0)){
+              HashMap<String,String> rooms = getRoomsData();
+              for (String room : rooms.keySet()){
+                System.out.println(room+": "+rooms.get(room)+" miejsc zajętych");
+              }
+            }
+            else if((command.startsWith("room "))) {
+              HashMap<String,String> rooms = getRoomsData();
+              System.out.println(command.substring(5)+": "+rooms.get(command.substring(5))+" miejsc zajętych");
+              ArrayList<String> players = findOrCreateRoom(command.substring(5)).getPlayers();
+              for (String name : players){
+                System.out.println("gracz: "+name);
+              }
+            }
+            else if((command.startsWith("end "))) {
+              findOrCreateRoom(command.substring(4)).forceEndGame();
+            }
+            else if((command.compareTo("shutdown"))==0) {
+              rooms.clear();
+              for (HandleClient client : clients){
+                client.disconnect();
+              }
+              clients.clear();
+
+              try {
+                serverSocket.close();
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+
+              System.exit(0);
+            }
+            else {
+              System.out.println("Nie znaleziono komendy");
+            }
+          }
+
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }).start();
+
       while (true) {
         Socket clientSocket = serverSocket.accept();
         System.out.println("Nowe połączenie: " + clientSocket);
 
-        new Thread(new HandleClient(clientSocket)).start();
+        HandleClient client = new HandleClient(clientSocket);
+        clients.add(client);
+        new Thread(client).start();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException ignored) {
+
     }
   }
 

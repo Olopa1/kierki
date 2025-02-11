@@ -40,6 +40,7 @@ public class TableScene implements ScenesHanlder{
       controller = loader.getController();
       controller.setTable(table);
       controller.setNetworkHandler(sceneManager.getNetworkHandler());
+      controller.hideElements();
       controller.setManager(sceneManager);
 
       this.tableScene = new Scene(root);

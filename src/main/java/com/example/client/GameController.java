@@ -5,6 +5,7 @@ import com.example.client.SceneManager;
 import com.example.common.Card;
 import com.example.common.Colors;
 import com.example.common.Table;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -64,9 +65,34 @@ public class GameController {
     @FXML
     Polygon triangle4;
 
+    @FXML
+    Label winLabel;
+    @FXML
+    Label winPlayer;
+    @FXML
+    Label winPoints;
+
     Table table;
     ClientNetworkHandler networkHandler;
     SceneManager manager;
+
+    public void hideElements(){
+        player1.setVisible(false);
+        player2.setVisible(false);
+        player3.setVisible(false);
+        player4.setVisible(false);
+        points1.setVisible(false);
+        points2.setVisible(false);
+        points3.setVisible(false);
+        points4.setVisible(false);
+        triangle1.setVisible(false);
+        triangle2.setVisible(false);
+        triangle3.setVisible(false);
+        triangle4.setVisible(false);
+        winPlayer.setVisible(false);
+        winPoints.setVisible(false);
+        winLabel.setVisible(false);
+    }
 
     public void setManager(SceneManager manager){
         this.manager = manager;
@@ -100,8 +126,44 @@ public class GameController {
 
     }
 
+    public void endGame(){
+        Platform.runLater(() -> {
+            triangle1.setVisible(false);
+            triangle2.setVisible(false);
+            triangle3.setVisible(false);
+            triangle4.setVisible(false);
+            cardsArea.setVisible(false);
+            card1.setVisible(false);
+            card2.setVisible(false);
+            card3.setVisible(false);
+            card4.setVisible(false);
+
+            HashMap<String, Integer> players = table.getPoints();
+            int i=0;
+            int maxI=0;
+            int max = (int) players.values().toArray()[0];
+            for(int value : players.values()){
+                if(value>max){
+                    max = value;
+                    maxI = i;
+                }
+                i++;
+            }
+            winPoints.setText("Punkty: "+max);
+            winPlayer.setText((String) players.keySet().toArray()[maxI]);
+
+            winLabel.setVisible(true);
+            winPlayer.setVisible(true);
+            winPoints.setVisible(true);
+        });
+    }
+
     public void updateTable(){
         Platform.runLater(() -> {
+            winLabel.setVisible(false);
+            winPlayer.setVisible(false);
+            winPoints.setVisible(false);
+
             cardsArea.getChildren().clear();
             int numberOfCards = table.getPlayer(manager.login).getNumberOfCards();
             ArrayList<Card> cards = table.getPlayer(manager.login).getHand().getHand();
@@ -262,6 +324,19 @@ public class GameController {
                             System.out.println("Gra rozpoczęta");
                         }else if(message.compareTo("ty") == 0) {
                             System.out.println("Twoja kolej");
+                        }else if(message.compareTo("koniec") == 0) {
+                            System.out.println("koniec gry");
+                            this.endGame();
+                        }else if(message.compareTo("leave") == 0) {
+                            System.out.println("opuszczasz pokoj");
+                            Platform.runLater(()->{
+                                manager.displayScene("show_tables");
+                            });
+                            break;
+                        }else if(message.compareTo("disconnect") == 0) {
+                            System.out.println("server zamyka polaczenie");
+                            Platform.exit();
+                            break;
                         }else
                             this.receiveMessage(message);
 
@@ -275,6 +350,12 @@ public class GameController {
             }
         }).start();
 
+    }
+
+    public void leaveRoom(ActionEvent event) throws IOException {
+        System.out.println("Leave clicked");
+        manager.getNetworkHandler().sendMessage("leave");
+//        manager.displayScene("show_tables");
     }
 
 }

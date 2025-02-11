@@ -16,9 +16,11 @@ public class Room{
     private final String name;
     private List<HandleClient> clients = new ArrayList<>();
     private Table table;
+    private boolean endGame;
 
     public Room(String name) {
         this.name = name;
+        this.endGame = false;
     }
 
     public String getName() {
@@ -55,12 +57,19 @@ public class Room{
     }
 
     public boolean nextMove(HandleClient client, Integer cardIndex) throws NotEnoughCardsInDeck {
+        if(this.endGame) return false;
+
         int result = this.table.nextMove(client.getPlayer(), cardIndex);
         if(result == -1){
             this.currentHand++;
-            result = this.table.nextHand(functions[this.currentHand]);
+            if(this.currentHand==7) endGame = true;
+            else
+                result = this.table.nextHand(functions[this.currentHand]);
         }
         broadcast(this.table, null);
+
+        if(endGame) broadcast("koniec", null);
+
         this.clients.get(result).sendMessage("ty");
         return true;
     }
@@ -75,5 +84,29 @@ public class Room{
 
     public Table getTable(){
         return this.table;
+    }
+    public ArrayList<String> getPlayers(){
+        ArrayList<String> players = new ArrayList<>();
+        for (HandleClient player : this.clients){
+            players.add(player.getUsername());
+        }
+        return players;
+    }
+
+    public boolean forceEndGame(){
+        if(this.endGame) return false;
+
+        this.endGame = true;
+        ArrayList<String> players = this.getPlayers();
+        Random random = new Random();
+        for (String player : players)
+            table.getPlayer(player).changeScore(-(random.nextInt(50)+1)*10);
+
+        broadcast("koniec", null);
+        return true;
+    }
+
+    public void removeClient(HandleClient client){
+        clients.remove(client);
     }
 }

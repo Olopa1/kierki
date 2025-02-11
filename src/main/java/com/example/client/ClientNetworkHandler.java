@@ -117,6 +117,11 @@ public class ClientNetworkHandler {
     out.flush();
   }
 
+  public void sendMessage(String message) throws IOException {
+    out.writeObject(message);
+    out.flush();
+  }
+
   public void sendCard(Integer index) throws IOException {
     out.writeObject(index);
     out.flush();
