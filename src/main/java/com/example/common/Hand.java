@@ -4,49 +4,72 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Hand implements Serializable{
-  private ArrayList<Card> cards;
-  
-  public Hand(){
-    this.cards = new ArrayList<>();
-  }
- 
-  public void sortCardsInHand(){
-    cards.sort(Comparator.comparing(Card::getColor).thenComparing(Card::getValue));
-  }
+/**
+ * Manages player's hand of cards.
+ */
+public class Hand implements Serializable {
+    private ArrayList<Card> cards;
 
-  public Boolean isHandEmpty(){
-    return this.cards.isEmpty();
-  }
-
-  public void takeCard(Card card){
-    this.cards.add(card);
-    this.sortCardsInHand();
-  }
-
-  public Card playCard(int cardNumber){
-    return this.cards.remove(cardNumber);
-  }
-  
-  public void displayHand(){
-    for(Card card : this.cards){
-      card.displayCard();
+    /**
+     * Creates empty hand.
+     */
+    public Hand() {
+        this.cards = new ArrayList<>();
     }
-  }
 
-  public ArrayList<Card> getHand(){
-    return this.cards;
-  }
+    /**
+     * Sorts cards in hand.
+     */
+    public void sortCardsInHand() {
+        cards.sort(Comparator.comparing(Card::getColor).thenComparing(Card::getValue));
+    }
 
-  public void emptyHand(){
-    this.cards.clear();
-  }
+    public Boolean isHandEmpty() {
+        return this.cards.isEmpty();
+    }
 
-  public int getNumberOfCards(){
-    return this.cards.size();
-  }
+    /**
+     * Inserts a card into hand.
+     *
+     * @param card Card to be added.
+     */
+    public void takeCard(Card card) {
+        this.cards.add(card);
+        this.sortCardsInHand();
+    }
 
-  public Card getCard(int index){
-    return this.cards.get(index);
-  }
+    /**
+     * Removes card from hand.
+     *
+     * @param cardNumber Index of card to be removed.
+     * @return Card from a given position.
+     */
+    public Card playCard(int cardNumber) {
+        return this.cards.remove(cardNumber);
+    }
+
+    /**
+     * Displays a hand.
+     */
+    public void displayHand() {
+        for (Card card : this.cards) {
+            card.displayCard();
+        }
+    }
+
+    public ArrayList<Card> getHand() {
+        return this.cards;
+    }
+
+    public void emptyHand() {
+        this.cards.clear();
+    }
+
+    public int getNumberOfCards() {
+        return this.cards.size();
+    }
+
+    public Card getCard(int index) {
+        return this.cards.get(index);
+    }
 }

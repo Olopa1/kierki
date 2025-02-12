@@ -7,6 +7,9 @@ import com.example.exceptions.NotEnoughCardsInDeck;
 import java.io.*;
 import java.net.*;
 
+/**
+ * This class gives tools to manage communication with client.
+ */
 public class HandleClient implements Runnable {
     private Socket socket;
     private String username;
@@ -15,6 +18,11 @@ public class HandleClient implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
+    /**
+     * Initializes input and output streams.
+     *
+     * @param socket Client socket on witch is communication is held.
+     */
     public HandleClient(Socket socket) {
         this.socket = socket;
         try {
@@ -26,11 +34,12 @@ public class HandleClient implements Runnable {
         this.room = null;
     }
 
+    /**
+     * Classic run method for thread classes.
+     */
     @Override
     public void run() {
         try {
-            //out.writeObject("Podaj login:");
-            //out.flush();
 
             AuthenticationData data = (AuthenticationData) in.readObject();
             if (!RunServer.authenticate(data.login, data.password)) {
@@ -43,8 +52,8 @@ public class HandleClient implements Runnable {
             out.writeObject("zalogowano");
             out.flush();
             System.out.println("Zalogownao uzytkownika: " + this.username);
-                      this.player = new Player(this.username);
-            
+            this.player = new Player(this.username);
+
             this.joinRoom();
             listenForMessages();
 
@@ -57,7 +66,10 @@ public class HandleClient implements Runnable {
         }
     }
 
-    private void joinRoom(){
+    /**
+     * Waits for clients actions towards picking room.
+     */
+    private void joinRoom() {
         try {
             while (true) {
                 Object rawResponse = this.in.readObject();
@@ -93,6 +105,13 @@ public class HandleClient implements Runnable {
         }
     }
 
+    /**
+     * Maintains communication with client during gameplay.
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NotEnoughCardsInDeck
+     */
     private void listenForMessages() throws IOException, ClassNotFoundException, NotEnoughCardsInDeck {
         try {
             Object object;
@@ -104,13 +123,11 @@ public class HandleClient implements Runnable {
                     } else if (message.compareTo("disconnect") == 0) {
                         this.disconnect();
                         break;
-                    }
-                    else if (message.compareTo("leave") == 0) {
+                    } else if (message.compareTo("leave") == 0) {
                         System.out.println("Uzytkownik opuszcza pokoj");
                         leaveRoom();
                         joinRoom();
-                    }
-                    else room.broadcast(username + ": " + message, this);
+                    } else room.broadcast(username + ": " + message, this);
                 }
                 if (object instanceof Table table) {
                     room.broadcast(table, null);
@@ -119,12 +136,16 @@ public class HandleClient implements Runnable {
                     room.nextMove(this, cardIndex);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             disconnect();
         }
     }
 
+    /**
+     * Forward given object to client.
+     *
+     * @param message Object implementing Serializable that will be sent.
+     */
     public void sendMessage(Object message) {
         try {
             out.reset();
@@ -133,17 +154,12 @@ public class HandleClient implements Runnable {
 
         } catch (IOException e) {
             System.out.println("Nie udalo sie wyslac");
-//            throw new RuntimeException(e);
         }
     }
 
-    public Player getPlayer(){
-        return this.player;
-    }
-    public String getUsername(){
-        return this.username;
-    }
-
+    /**
+     * Ends connection channel with client.
+     */
     public void disconnect() {
         try {
             leaveRoom();
@@ -156,15 +172,25 @@ public class HandleClient implements Runnable {
             out = null;
             if (socket != null) socket.close();
             socket = null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Problem z disconnect");
         }
     }
 
-    public void leaveRoom(){
+    /**
+     * Removes client from their room.
+     */
+    public void leaveRoom() {
         sendMessage("leave");
-        if(room != null) room.removeClient(this);
+        if (room != null) room.removeClient(this);
         room = null;
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public String getUsername() {
+        return this.username;
     }
 }

@@ -1,11 +1,8 @@
 package com.example.client;
 
-import com.example.client.ClientNetworkHandler;
-import com.example.client.SceneManager;
 import com.example.common.Card;
 import com.example.common.Colors;
 import com.example.common.Table;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -21,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Controller of scene containing game.
+ */
 public class GameController {
     @FXML
     HBox cardsArea;
@@ -76,7 +76,10 @@ public class GameController {
     ClientNetworkHandler networkHandler;
     SceneManager manager;
 
-    public void hideElements(){
+    /**
+     * Hides uninitialized elements.
+     */
+    public void hideElements() {
         player1.setVisible(false);
         player2.setVisible(false);
         player3.setVisible(false);
@@ -94,39 +97,37 @@ public class GameController {
         winLabel.setVisible(false);
     }
 
-    public void setManager(SceneManager manager){
-        this.manager = manager;
-    }
-
-    public void setNetworkHandler(ClientNetworkHandler networkHandler){
-        this.networkHandler = networkHandler;
-    }
-
-    public void setTable(Table table){
-        this.table = table;
-    }
-
-    public void sendMessage(ActionEvent event){
+    /**
+     * Sends chat messge.
+     *
+     * @param event Clicked chat button.
+     */
+    public void sendMessage(ActionEvent event) {
         String message = messageArea.getText();
         messageArea.clear();
 
-        chatArea.setText(chatArea.getText()+"\nty: "+message);
+        chatArea.setText(chatArea.getText() + "\nty: " + message);
 
         try {
             this.manager.getNetworkHandler().sendChatMessage(message);
-//            this.networkHandler.sendChatMessage(message);
         } catch (IOException e) {
             System.out.println("Nie udało się wysłać wiadomosci");
         }
     }
 
-    public void receiveMessage(String message){
-
-        chatArea.setText(chatArea.getText()+"\n"+message);
-
+    /**
+     * Displays message.
+     *
+     * @param message String containing message.
+     */
+    public void receiveMessage(String message) {
+        chatArea.setText(chatArea.getText() + "\n" + message);
     }
 
-    public void endGame(){
+    /**
+     * Ends game and displays relevant information.
+     */
+    public void endGame() {
         Platform.runLater(() -> {
             triangle1.setVisible(false);
             triangle2.setVisible(false);
@@ -139,17 +140,17 @@ public class GameController {
             card4.setVisible(false);
 
             HashMap<String, Integer> players = table.getPoints();
-            int i=0;
-            int maxI=0;
+            int i = 0;
+            int maxI = 0;
             int max = (int) players.values().toArray()[0];
-            for(int value : players.values()){
-                if(value>max){
+            for (int value : players.values()) {
+                if (value > max) {
                     max = value;
                     maxI = i;
                 }
                 i++;
             }
-            winPoints.setText("Punkty: "+max);
+            winPoints.setText("Punkty: " + max);
             winPlayer.setText((String) players.keySet().toArray()[maxI]);
 
             winLabel.setVisible(true);
@@ -158,7 +159,10 @@ public class GameController {
         });
     }
 
-    public void updateTable(){
+    /**
+     * Updates elements containing game information.
+     */
+    public void updateTable() {
         Platform.runLater(() -> {
             player1.setVisible(true);
             player2.setVisible(true);
@@ -184,7 +188,7 @@ public class GameController {
                 view.setPreserveRatio(true);
                 view.setSmooth(true);
 
-                view.setOnMouseClicked(event ->{
+                view.setOnMouseClicked(event -> {
                     Integer index = indexOfCard(card);
                     try {
                         this.manager.getNetworkHandler().sendCard(index);
@@ -198,17 +202,17 @@ public class GameController {
 
             HashMap<String, Integer> players = table.getPoints();
             int nr = 0;
-            for(String name : players.keySet()){
-                if(name.equals(this.manager.login))
+            for (String name : players.keySet()) {
+                if (name.equals(this.manager.login))
                     break;
                 nr++;
             }
             int currentPlayer = table.getCurrentPlayer();
 
             player1.setText(this.manager.login);
-            points1.setText("Punkty: "+players.get(this.manager.login));
+            points1.setText("Punkty: " + players.get(this.manager.login));
             triangle1.setVisible(currentPlayer == nr);
-            if(isVisible(nr)) {
+            if (isVisible(nr)) {
                 Card last = table.getPlayer(this.manager.login).getLastPlayedCard();
                 Image cardImg = getCardImage(last);
                 card1.setImage(cardImg);
@@ -216,15 +220,14 @@ public class GameController {
                 card1.setPreserveRatio(true);
                 card1.setSmooth(true);
                 card1.setVisible(true);
-            }
-            else card1.setVisible(false);
+            } else card1.setVisible(false);
 
-            nr = (nr+1)%4;
+            nr = (nr + 1) % 4;
             String name = (String) players.keySet().toArray()[nr];
             player2.setText(name);
-            points2.setText("Punkty: "+players.get(name));
+            points2.setText("Punkty: " + players.get(name));
             triangle2.setVisible(currentPlayer == nr);
-            if(isVisible(nr)) {
+            if (isVisible(nr)) {
                 Card last = table.getPlayer(name).getLastPlayedCard();
                 Image cardImg = getCardImage(last);
                 card2.setImage(cardImg);
@@ -232,15 +235,14 @@ public class GameController {
                 card2.setPreserveRatio(true);
                 card2.setSmooth(true);
                 card2.setVisible(true);
-            }
-            else card2.setVisible(false);
+            } else card2.setVisible(false);
 
-            nr = (nr+1)%4;
+            nr = (nr + 1) % 4;
             name = (String) players.keySet().toArray()[nr];
             player3.setText(name);
-            points3.setText("Punkty: "+players.get(name));
+            points3.setText("Punkty: " + players.get(name));
             triangle3.setVisible(currentPlayer == nr);
-            if(isVisible(nr)) {
+            if (isVisible(nr)) {
                 Card last = table.getPlayer(name).getLastPlayedCard();
                 Image cardImg = getCardImage(last);
                 card3.setImage(cardImg);
@@ -248,15 +250,14 @@ public class GameController {
                 card3.setPreserveRatio(true);
                 card3.setSmooth(true);
                 card3.setVisible(true);
-            }
-            else card3.setVisible(false);
+            } else card3.setVisible(false);
 
-            nr = (nr+1)%4;
+            nr = (nr + 1) % 4;
             name = (String) players.keySet().toArray()[nr];
             player4.setText(name);
-            points4.setText("Punkty: "+players.get(name));
+            points4.setText("Punkty: " + players.get(name));
             triangle4.setVisible(currentPlayer == nr);
-            if(isVisible(nr)) {
+            if (isVisible(nr)) {
                 Card last = table.getPlayer(name).getLastPlayedCard();
                 Image cardImg = getCardImage(last);
                 card4.setImage(cardImg);
@@ -264,58 +265,78 @@ public class GameController {
                 card4.setPreserveRatio(true);
                 card4.setSmooth(true);
                 card4.setVisible(true);
-            }
-            else card4.setVisible(false);
+            } else card4.setVisible(false);
 
         });
     }
 
-    private Integer indexOfCard(Card card){
+    /**
+     * Finds index in hand of a given card.
+     *
+     * @param card Card.
+     * @return Index of a card in hand.
+     */
+    private Integer indexOfCard(Card card) {
         Integer index = 0;
-        for(Card curCard : this.table.getPlayer(this.manager.login).getHand().getHand()){
-            if(curCard==card) break;
+        for (Card curCard : this.table.getPlayer(this.manager.login).getHand().getHand()) {
+            if (curCard == card) break;
             index++;
         }
         return index;
     }
 
-    private boolean isVisible(int nr){
-        if(table.getCurrentPlayer()==table.getFirstPlayer())
+    /**
+     * Checks whether this player moved in this trick or not.
+     *
+     * @param nr Number of player.
+     * @return Whether player moved or not.
+     */
+    private boolean isVisible(int nr) {
+        if (table.getCurrentPlayer() == table.getFirstPlayer())
             return false;
 
-        if(table.getFirstPlayer()<=table.getCurrentPlayer())
+        if (table.getFirstPlayer() <= table.getCurrentPlayer())
             return nr >= table.getFirstPlayer() && nr < table.getCurrentPlayer();
         else
             return nr >= table.getFirstPlayer() || nr < table.getCurrentPlayer();
     }
 
-    private Image getCardImage(Card card){
+    /**
+     * Loads image of a given card.
+     *
+     * @param card Card information.
+     * @return Image which displays that card.
+     */
+    private Image getCardImage(Card card) {
         int value = card.getValue();
         String valueName = null;
-        if(value==11) valueName = "jack";
-        if(value==12) valueName = "queen";
-        if(value==13) valueName = "king";
-        if(value==14) valueName = "ace";
+        if (value == 11) valueName = "jack";
+        if (value == 12) valueName = "queen";
+        if (value == 13) valueName = "king";
+        if (value == 14) valueName = "ace";
 
         Colors color = card.getColor();
         String colorName = "";
-        if(color==Colors.DIAMONDS) colorName = "diamonds";
-        if(color==Colors.HEARTS) colorName = "hearts";
-        if(color==Colors.SPADES) colorName = "spades";
-        if(color==Colors.CLUBS) colorName = "clubs";
+        if (color == Colors.DIAMONDS) colorName = "diamonds";
+        if (color == Colors.HEARTS) colorName = "hearts";
+        if (color == Colors.SPADES) colorName = "spades";
+        if (color == Colors.CLUBS) colorName = "clubs";
 
         String cardName;
-        if(valueName == null)
-            cardName = value+"_of_"+colorName+".png";
+        if (valueName == null)
+            cardName = value + "_of_" + colorName + ".png";
         else
-            cardName = valueName+"_of_"+colorName+".png";
+            cardName = valueName + "_of_" + colorName + ".png";
 
-        Image image = new Image(getClass().getResourceAsStream("PNG-cards\\"+cardName));
+        Image image = new Image(getClass().getResourceAsStream("PNG-cards\\" + cardName));
 
         return image;
     }
 
-    public void initChat(){
+    /**
+     * Initializes receiving information from a server.
+     */
+    public void initChat() {
 
         chatArea.setText("");
 
@@ -323,29 +344,28 @@ public class GameController {
             try {
                 Object serverMessage;
                 while ((serverMessage = manager.getNetworkHandler().receiveChatMessage()) != null) {
-                    if(serverMessage instanceof Table table) {
+                    if (serverMessage instanceof Table table) {
                         this.table = table;
                         this.updateTable();
-                    }
-                    else if(serverMessage instanceof String message){
-                        if(message.compareTo("Start") == 0) {
+                    } else if (serverMessage instanceof String message) {
+                        if (message.compareTo("Start") == 0) {
                             System.out.println("Gra rozpoczęta");
-                        }else if(message.compareTo("ty") == 0) {
+                        } else if (message.compareTo("ty") == 0) {
                             System.out.println("Twoja kolej");
-                        }else if(message.compareTo("koniec") == 0) {
+                        } else if (message.compareTo("koniec") == 0) {
                             System.out.println("koniec gry");
                             this.endGame();
-                        }else if(message.compareTo("leave") == 0) {
+                        } else if (message.compareTo("leave") == 0) {
                             System.out.println("opuszczasz pokoj");
-                            Platform.runLater(()->{
+                            Platform.runLater(() -> {
                                 manager.displayScene("show_tables");
                             });
                             break;
-                        }else if(message.compareTo("disconnect") == 0) {
+                        } else if (message.compareTo("disconnect") == 0) {
                             System.out.println("server zamyka polaczenie");
                             Platform.exit();
                             break;
-                        }else
+                        } else
                             this.receiveMessage(message);
 
                     }
@@ -360,10 +380,27 @@ public class GameController {
 
     }
 
+    /**
+     * Leaves room on server and switches scene to choose room.
+     *
+     * @param event Clicked leave button.
+     * @throws IOException
+     */
     public void leaveRoom(ActionEvent event) throws IOException {
         System.out.println("Leave clicked");
         manager.getNetworkHandler().sendMessage("leave");
-//        manager.displayScene("show_tables");
+    }
+
+    public void setManager(SceneManager manager) {
+        this.manager = manager;
+    }
+
+    public void setNetworkHandler(ClientNetworkHandler networkHandler) {
+        this.networkHandler = networkHandler;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 
 }

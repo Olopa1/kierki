@@ -5,24 +5,38 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class RunClient extends Application{
-  @Override
-  public void start(Stage stage){
-    SceneManager manager = new SceneManager(stage);
+/**
+ * Main class of client.
+ */
+public class RunClient extends Application {
 
-    stage.setOnCloseRequest((WindowEvent event) -> {
-      try {
-        manager.getNetworkHandler().sendMessage("disconnect");
-      } catch (Exception e) {
-      }
-      Platform.exit();
-    });
+    /**
+     * Derived method to set a first stage
+     *
+     * @param stage Default stage.
+     */
+    @Override
+    public void start(Stage stage) {
+        SceneManager manager = new SceneManager(stage);
 
-    manager.displayScene("login");
-  }
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            try {
+                manager.getNetworkHandler().sendMessage("disconnect");
+            } catch (Exception e) {
+            }
+            Platform.exit();
+        });
 
-  public static void main(String[] args){
-    launch();
-  }
+        manager.displayScene("login");
+    }
+
+    /**
+     * Main client's method.
+     *
+     * @param args Console arguments.
+     */
+    public static void main(String[] args) {
+        launch();
+    }
 
 }

@@ -2,6 +2,9 @@ package com.example.common;
 
 import java.io.Serializable;
 
+/**
+ * Manages player in the game.
+ */
 public class Player implements Serializable{
   private String playerName;
   private int score;
@@ -9,6 +12,10 @@ public class Player implements Serializable{
   private boolean firstPlayer;
   private Card lastPlayedCard;
 
+  /**
+   * Creates player.
+   * @param playerName Name of the new player.
+   */
   public Player(String playerName){
     this.playerName = playerName;
     this.score = 0;
